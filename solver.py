@@ -1,31 +1,25 @@
 #Sudoku Solving / Checking Methods
-def isValid(self,board: List[List[str]],row: int,col: int)-> bool:
-    validRow = self.checkRow(board,row)
-    validCol = self.checkCol(board,col)
-    validSub = self.checkSubGrid(board,row,col)
-    return validRow and validCol and validSub
-
-def checkRow(self,board: List[List[str]],row: int)-> bool:
+def checkRow(board: list,row: int)-> bool:
     rowVals = {"1","2","3","4","5","6","7","8","9"}
     try:
         for val in board[row]:
-            if val != ".":
+            if val != "0":
                 rowVals.remove(val)
     except KeyError:
         return False
     return True
     
-def checkCol(self,board: List[List[str]],col: int)->bool:
+def checkCol(board: list,col: int)->bool:
     colVals = {"1","2","3","4","5","6","7","8","9"}
     try:
         for row in range(9):
-            if board[row][col] != '.':
+            if board[row][col] != '0':
                 colVals.remove(board[row][col])
     except Exception:
         return False
     return True
 
-def checkSubGrid(self,board: List[List[str]],row: int,col: int)->bool:
+def checkSubGrid(board: list,row: int,col: int)->bool:
     subVals = {"1","2","3","4","5","6","7","8","9"}
     rowStart = 0
     colStart = 0
@@ -42,17 +36,17 @@ def checkSubGrid(self,board: List[List[str]],row: int,col: int)->bool:
     try:
         for r in range(rowStart,rowStart+3):
             for c in range(colStart,colStart+3):
-                if board[r][c] != '.':
+                if board[r][c] != '0':
                     subVals.remove(board[r][c])
     except Exception:
         return False
     return True
 
-def recurse(self,board: List[List[str]])->bool:
+def recurse(board: list)->bool:
     r,c = -1,-1
     for row in range(0,9):
         for col in range(0,9):
-            if board[row][col] == '.':
+            if board[row][col] == '0':
                 r,c = row,col
                 break
                 
@@ -61,10 +55,18 @@ def recurse(self,board: List[List[str]])->bool:
     
     for test in range(1,10):
         board[r][c] = str(test)
-        if self.isValid(board,r,c) and self.recurse(board):
+        if isValid(board,r,c) and recurse(board):
             return True
-        board[r][c] = '.'
+        board[r][c] = '0'
     return False
 
-def solve(self, board: List[List[str]]) -> None:
-    self.recurse(board)
+def isValid(board: list,row: int,col: int)-> bool:
+    validRow = checkRow(board,row)
+    validCol = checkCol(board,col)
+    validSub = checkSubGrid(board,row,col)
+    return validRow and validCol and validSub
+    
+def solve(board: list) -> None:
+    recurse(board)
+    
+
