@@ -3,9 +3,7 @@ import solver
 
 class board:
     def __init__(self):
-        self.board = []
-        #self.presetSquares = [] 
-        #store as tuples squares which cannot be changed? or maybe reinforce this using the gui
+        self.board = [] #store the orignal board for the reset button of the gui. (resets state back to original board)
         prefix = os.getcwd() + "\\boards\\"
         openFile = open(prefix+random.choice(os.listdir("boards")),'r')
         for line in openFile:
@@ -14,6 +12,7 @@ class board:
         openFile.close()
         
         self.solution = [row.copy() for row in self.board]
+        self.solvingBoard = [row.copy() for row in self.board] #get the user input information and update the status of this board.
         solver.solve(self.solution)
         
     
