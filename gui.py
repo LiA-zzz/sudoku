@@ -36,7 +36,7 @@ class sudokuGUI:
                     continue
         self.confirmFrame.destroy()
 
-    def confirmAction(self):
+    def confirmReset(self):
         self.confirmFrame = tk.Toplevel(self.root)
         self.confirmFrame.title("Reset?")
         btnFrame = tk.Frame(self.confirmFrame)
@@ -48,6 +48,25 @@ class sudokuGUI:
 
         action_prompt.grid(row=0,column=0)
         btnFrame.grid(row=1,column=0)
+    
+    def correctAnswer(self):
+        self.confirmFrame = tk.Toplevel(self.root)
+        self.confirmFrame.title("Congratulations!")
+        btnFrame = tk.Frame(self.confirmFrame)
+        yes_action = tk.Button(btnFrame,text='Yep', command=self.resetBoard)
+        no_action = tk.Button(btnFrame,text='Nope', command=self.confirmFrame.destroy)
+        yes_action.grid(row=0,column=0,padx=10,pady=10)
+        no_action.grid(row=0,column=1,padx=10,pady=10)
+        action_prompt = tk.Label(self.confirmFrame,text="Congrats! You solved this sudoku board. Would you like to reset the board?")
+
+        action_prompt.grid(row=0,column=0)
+        btnFrame.grid(row=1,column=0)
+
+    def incorrectAnswer(self):
+        self.confirmFrame = tk.Toplevel(self.root)
+        self.confirmFrame.title("Please try again")
+        action_prompt = tk.Label(self.confirmFrame,text="Unfortunately this is not a valid solution for this sudoku board.")
+        action_prompt.grid(row=0,column=0)
 
     def createGrid(self,inFrame,withGrid):
         for i in range(9):
@@ -64,7 +83,7 @@ class sudokuGUI:
     def createButtons(self,inFrame):
         solveButton = tk.Button(master=inFrame,text='Show Solution',command = self.showSolution)
         solveButton.grid(row=0,column=1)
-        resetButton = tk.Button(master=inFrame,text='Reset',command = self.confirmAction)
+        resetButton = tk.Button(master=inFrame,text='Reset',command = self.confirmReset)
         resetButton.grid(row=0,column=2)
         checkAnswer = tk.Button(master=inFrame,text='Check Answer',command = self.checkAnswers)
         checkAnswer.grid(row=0,column=0)
@@ -85,6 +104,13 @@ class sudokuGUI:
         for row in range(9):
             for col in range(9):
                 widget = self.boardFrame.grid_slaves(row=row,column=col)
-                
+                try:
+                    self.sudoku.solvingBoard[row][col] = widget[0].children['!entry'].get()
+                except Exception:
+                    continue
+        if (self.sudoku.solvingBoard == self.sudoku.solution):
+            self.correctAnswer()
+        else:
+            self.incorrectAnswer()
 
 sudokuGUI()
